@@ -9,7 +9,7 @@ export class EmailSenderService {
     httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer  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'
+            'Authorization': 'Bearer  <API_KEY_HERE>'
         })
     };
     data = JSON.stringify({
