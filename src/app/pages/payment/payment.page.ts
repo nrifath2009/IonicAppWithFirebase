@@ -5,6 +5,8 @@ import { PaymentService } from 'src/app/services/payment.service';
 import { Router } from '@angular/router';
 import { CreditUnion } from './bank.model';
 import { BankService } from 'src/app/services/bank.service';
+import { BankSqlService } from 'src/app/services/bank-sql.service';
+import { PaymentSqlService } from 'src/app/services/paymentsql.service';
 
 @Component({
   selector: 'app-payment',
@@ -15,7 +17,8 @@ export class PaymentPage implements OnInit {
 
   paymentModel: Payment = {
     payeeName: null,
-    amount: null
+    amount: null,
+    creditUnionId: null
   };
   loader: any;
   creditUnions: CreditUnion[] = [];
@@ -24,11 +27,14 @@ export class PaymentPage implements OnInit {
     private paymentService: PaymentService,
     private loadingController: LoadingController,
     private alertController: AlertController,
-    private bankService: BankService) { }
+    private bankService: BankService,
+    private bankSqlService: BankSqlService,
+    private paymentSqlService: PaymentSqlService) { }
 
   ngOnInit() {
     this.buildLoader();
-    this.loadCreditUnions();
+    //this.loadCreditUnions();
+    this.loadCredionUnionFromSql();
   }
   loadCreditUnions() {
     this.bankService.getCreditUnions().subscribe(response => {
@@ -39,6 +45,15 @@ export class PaymentPage implements OnInit {
         console.log('Error Occured...');
       });
 
+  }
+  loadCredionUnionFromSql() {
+    this.bankSqlService.getAllBank().subscribe(response => {
+      this.creditUnions = response;
+      console.log('Response received...');
+    },
+      error => {
+        console.log('Error Occured...');
+      });
   }
 
   async showAlert(header, subHeader, message) {
@@ -61,14 +76,47 @@ export class PaymentPage implements OnInit {
   async hideLoader() {
     await this.loader.dismiss();
   }
+
   onPayNowButtonClick() {
+    this.MakePaymentSql();
+  }
+
+  clearModel() {
+    this.paymentModel.payeeName = null;
+    this.paymentModel.amount = null;
+  }
+  validate() {
+    return this.paymentModel.creditUnionId != null && this.paymentModel.amount != null;
+  }
+  MakePaymentFirebase() {
     if (!this.validate()) {
-      this.showAlert("Message", "Please fill all the field", null);
+      //let msg = "<p>Your donation will be sent to American red cross</p><p>a NetGiver REGISTERED 501(c)(3) organization</p>"
+      this.showAlert("Message", "All fields are required", null);
       return;
     }
     this.showLoader();
 
     this.paymentService.addPayment(this.paymentModel).then(() => {
+      this.hideLoader();
+      console.log('Payment Successfull!');
+      this.clearModel();
+      this.router.navigateByUrl('/payment-detail');
+    },
+      err => {
+        console.log('Opps! There was a problem to make payment');
+        this.hideLoader();
+        this.showAlert('Message', 'Payment Failed!', null);
+      });
+  }
+  MakePaymentSql() {
+    if (!this.validate()) {
+      let msg = "<p>Your donation will be sent to American red cross</p><p>a NetGiver REGISTERED 501(c)(3) organization</p>"
+      this.showAlert("Message", null, msg);
+      return;
+    }
+    this.showLoader();
+
+    this.paymentSqlService.addPayment(this.paymentModel).subscribe(() => {
       //this.router.navigateByUrl('/');
       this.hideLoader();
       console.log('Payment Successfull!');
@@ -81,14 +129,6 @@ export class PaymentPage implements OnInit {
         this.hideLoader();
         this.showAlert('Message', 'Payment Failed!', null);
       });
-  }
-
-  clearModel() {
-    this.paymentModel.payeeName = null;
-    this.paymentModel.amount = null;
-  }
-  validate() {
-    return this.paymentModel.payeeName != null && this.paymentModel.amount != null;
   }
 
 

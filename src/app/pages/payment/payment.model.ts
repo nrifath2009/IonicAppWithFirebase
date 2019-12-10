@@ -1,5 +1,9 @@
 export interface Payment {
-    id?: string,
+    id?: string;
     payeeName: string;
     amount: number;
+    creditUnionId?: number;
 }
+
+
+

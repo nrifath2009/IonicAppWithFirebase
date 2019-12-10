@@ -19,6 +19,7 @@ export class AppLoaderService {
             return await this.loading.present();
         }
         else {
+            console.log(message);
             // If loader is showing, only change text, won't create a new loader.
             this.isShowing = true;
             this.loading.message = message;
