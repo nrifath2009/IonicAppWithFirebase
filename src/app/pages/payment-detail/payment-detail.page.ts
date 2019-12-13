@@ -18,13 +18,12 @@ export class PaymentDetailPage implements OnInit {
 
   ngOnInit() {
     console.log(this.paymentDetails);
-    //this.loadPayments();
-    this.loadPaymentsFromSql();
   }
 
   ionViewDidEnter() {
     console.log('ionViewDidEnter');
-    this.loadPaymentsFromSql();
+    this.loadPayments();
+    //this.loadPaymentsFromSql();
   }
 
   loadPaymentsFromSql() {
@@ -82,7 +81,8 @@ export class PaymentDetailPage implements OnInit {
           text: 'Delete',
           cssClass: 'danger',
           handler: () => {
-            this.deleteFromSql(payment.id);
+            //this.deleteFromSql(payment.id);
+            this.deleteFromFirebase(payment.id);
           }
         }
       ]

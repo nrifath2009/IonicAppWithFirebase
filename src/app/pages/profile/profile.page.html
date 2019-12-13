@@ -3,15 +3,21 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="login"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="onSignOutClick()">
+        <ion-icon name="log-out"></ion-icon>
+        Signout
+      </ion-button>
+    </ion-buttons>
     <ion-title>My Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Account</ion-card-subtitle>
-      <ion-card-title>Md. Nahidur Rahman</ion-card-title>
+      <ion-card-title>{{loggedInUser}}</ion-card-title>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
       <ion-item lines="none" class="ion-text-center ion-no-padding">

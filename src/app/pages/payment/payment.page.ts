@@ -33,8 +33,8 @@ export class PaymentPage implements OnInit {
 
   ngOnInit() {
     this.buildLoader();
-    //this.loadCreditUnions();
-    this.loadCredionUnionFromSql();
+    this.loadCreditUnions();
+    //this.loadCredionUnionFromSql();
   }
   loadCreditUnions() {
     this.bankService.getCreditUnions().subscribe(response => {
@@ -78,18 +78,22 @@ export class PaymentPage implements OnInit {
   }
 
   onPayNowButtonClick() {
-    this.MakePaymentSql();
+    //this.MakePaymentSql();
+    this.MakePaymentFirebase();
   }
 
   clearModel() {
     this.paymentModel.payeeName = null;
     this.paymentModel.amount = null;
   }
-  validate() {
+  validateFirebase() {
+    return this.paymentModel.payeeName != null && this.paymentModel.amount != null;
+  }
+  validateSql() {
     return this.paymentModel.creditUnionId != null && this.paymentModel.amount != null;
   }
   MakePaymentFirebase() {
-    if (!this.validate()) {
+    if (!this.validateFirebase()) {
       //let msg = "<p>Your donation will be sent to American red cross</p><p>a NetGiver REGISTERED 501(c)(3) organization</p>"
       this.showAlert("Message", "All fields are required", null);
       return;
@@ -109,15 +113,15 @@ export class PaymentPage implements OnInit {
       });
   }
   MakePaymentSql() {
-    if (!this.validate()) {
+    if (!this.validateSql()) {
       let msg = "<p>Your donation will be sent to American red cross</p><p>a NetGiver REGISTERED 501(c)(3) organization</p>"
-      this.showAlert("Message", null, msg);
+      this.showAlert("Message", 'All fields are required', null);
       return;
     }
     this.showLoader();
 
     this.paymentSqlService.addPayment(this.paymentModel).subscribe(() => {
-      //this.router.navigateByUrl('/');
+
       this.hideLoader();
       console.log('Payment Successfull!');
       this.clearModel();
@@ -125,7 +129,6 @@ export class PaymentPage implements OnInit {
     },
       err => {
         console.log('Opps! There was a problem to make payment');
-        //this.showToast('There was a problem adding your idea :(');
         this.hideLoader();
         this.showAlert('Message', 'Payment Failed!', null);
       });

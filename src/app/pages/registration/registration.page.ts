@@ -1,26 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from 'src/app/services/product.service';
+import { Registration } from './registration.model';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
-import { Login } from 'src/app/models/login.model';
 import { FirebaseAuthService } from 'src/app/services/firebaseauth.service';
 import { AppConstantService } from 'src/app/core/appconstant.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-registration',
+  templateUrl: './registration.page.html',
+  styleUrls: ['./registration.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class RegistrationPage implements OnInit {
 
-  loginModel: Login = {
+  registrationModel: Registration = {
+    name: null,
     email: null,
     password: null
   };
-  loader: any;
   errorMessage: any;
+  loader: any;
 
-  constructor(private productService: ProductService,
-    private alertController: AlertController,
+
+
+  constructor(private alertController: AlertController,
     private loadingController: LoadingController,
     private nav: NavController,
     private firebaseAuthService: FirebaseAuthService,
@@ -31,15 +32,16 @@ export class LoginPage implements OnInit {
   }
 
   ionViewDidEnter() {
+    this.redirect();
+  }
+  redirect() {
     if (this.firebaseAuthService.userDetails()) {
       this.nav.navigateRoot('/profile');
     } else {
       this.clearData();
-      this.nav.navigateRoot('/login');
+      this.nav.navigateRoot('/registration');
     }
-
   }
-
 
   async showAlert(header, subHeader, message) {
     const alert = await this.alertController.create({
@@ -63,17 +65,16 @@ export class LoginPage implements OnInit {
     await this.loader.dismiss();
   }
 
-  async onLoginButtonClick() {
+  async onSignUpButtonClick() {
     await this.showLoader();
     if (!this.validate()) {
       await this.hideLoader();
       this.showAlert("Invalid Login", "Invalid username or password", null);
       return;
     }
-    this.firebaseAuthService.login(this.loginModel).then(res => {
+    this.firebaseAuthService.register(this.registrationModel).then(res => {
       console.log(res);
-      this.errorMessage = "";
-      this.nav.navigateForward('/profile');
+      this.redirect();
     }, err => {
       console.log(err);
       this.errorMessage = this.appConstant.ErrorMessage(err);
@@ -83,18 +84,17 @@ export class LoginPage implements OnInit {
 
 
   }
+
   onCancelButtonClick() {
     this.clearData();
   }
   clearData() {
-    this.loginModel.email = null;
-    this.loginModel.password = null;
+    this.registrationModel.name = null;
+    this.registrationModel.email = null;
+    this.registrationModel.password = null;
   }
   validate() {
-    return this.loginModel.email != null && this.loginModel.password != null;
-  }
-  onCreateNewButtonClick() {
-    this.nav.navigateRoot('/registration');
+    return this.registrationModel.email != null && this.registrationModel.password != null;
   }
 
 }

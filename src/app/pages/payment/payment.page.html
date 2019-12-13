@@ -18,8 +18,8 @@
         </ion-item> -->
         <ion-item>
           <ion-label>Credit Unions</ion-label>
-          <ion-select placeholder="Select One" [(ngModel)]="paymentModel.creditUnionId">
-            <ion-select-option *ngFor="let bank of creditUnions" value="{{bank.id}}">{{bank.name}}</ion-select-option>
+          <ion-select placeholder="Select One" [(ngModel)]="paymentModel.payeeName">
+            <ion-select-option *ngFor="let bank of creditUnions" value="{{bank.name}}">{{bank.name}}</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item>

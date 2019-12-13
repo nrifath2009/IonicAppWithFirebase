@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>Login</ion-title>
+    <ion-title>Registar</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,37 +11,34 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12" padding>
-        <h4>Login Here</h4>
+        <h4>Signup Here</h4>
+        <ion-item>
+          <ion-label position="floating">Name</ion-label>
+          <ion-input type="text" [(ngModel)]="registrationModel.name"></ion-input>
+        </ion-item>
         <ion-item>
           <ion-label position="floating">Email</ion-label>
-          <ion-input type="text" [(ngModel)]="loginModel.email"></ion-input>
+          <ion-input type="text" [(ngModel)]="registrationModel.email"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Password</ion-label>
-          <ion-input type="password" [(ngModel)]="loginModel.password"></ion-input>
+          <ion-input type="password" [(ngModel)]="registrationModel.password"></ion-input>
         </ion-item>
-        <ion-item lines="none" *ngIf="errorMessage">
-          <ion-label color="danger">{{errorMessage}}</ion-label>
+        <ion-item *ngIf="errorMessage">
+          <ion-label>{{errorMessage}}</ion-label>
         </ion-item>
       </ion-col>
 
     </ion-row>
     <ion-row>
       <ion-col size="6">
-        <ion-button color="primary" expand="block" (click)="onLoginButtonClick()">
-          Login
+        <ion-button color="primary" expand="block" (click)="onSignUpButtonClick()">
+          Sign up
         </ion-button>
       </ion-col>
       <ion-col size="6">
         <ion-button color="danger" expand="block" (click)="onCancelButtonClick()">
           Cancel
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="12">
-        <ion-button color="primary" expand="block" (click)="onCreateNewButtonClick()">
-          Create New Account
         </ion-button>
       </ion-col>
     </ion-row>
